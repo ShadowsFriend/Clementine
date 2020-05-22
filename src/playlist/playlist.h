@@ -266,7 +266,7 @@ class Playlist : public QAbstractListModel {
   void InsertInternetItems(InternetService* service, const SongList& songs,
                            int pos = -1, bool play_now = false,
                            bool enqueue = false, bool enqueue_next = false);
-  void ReshuffleIndices();
+  void ReshuffleIndices(bool reshuffle_all = false);
 
   // If this playlist contains the current item, this method will apply the
   // "valid" flag on it.

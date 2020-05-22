@@ -2052,7 +2052,7 @@ bool AlbumShuffleComparator(const QMap<QString, int>& album_key_positions,
 }
 }
 
-void Playlist::ReshuffleIndices() {
+void Playlist::ReshuffleIndices(bool reshuffle_all) {
   if (!playlist_sequence_) {
     return;
   }
@@ -2069,7 +2069,7 @@ void Playlist::ReshuffleIndices() {
   // only shuffle items that haven't been played yet.
   QList<int>::iterator begin = virtual_items_.begin();
   QList<int>::iterator end = virtual_items_.end();
-  if (current_virtual_index_ != -1)
+  if ((current_virtual_index_ != -1) && !reshuffle_all)
     std::advance(begin, current_virtual_index_ + 1);
 
   switch (playlist_sequence_->shuffle_mode()) {
