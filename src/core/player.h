@@ -64,7 +64,7 @@ class PlayerInterface : public QObject {
 
   // Manual track change to the specified track
   virtual void PlayAt(int i, Engine::TrackChangeFlags change,
-                      bool reshuffle) = 0;
+                      bool reshuffle, bool reshuffle_all) = 0;
 
   // If there's currently a song playing, pause it, otherwise play the track
   // that was playing last, or the first one on the playlist
@@ -147,7 +147,7 @@ class Player : public PlayerInterface {
  public slots:
   void ReloadSettings();
 
-  void PlayAt(int i, Engine::TrackChangeFlags change, bool reshuffle);
+  void PlayAt(int i, Engine::TrackChangeFlags change, bool reshuffle, bool reshuffle_all = false);
   void PlayPause();
   void RestartOrPrevious();
   void Next();

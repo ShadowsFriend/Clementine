@@ -222,7 +222,7 @@ void Player::NextItem(Engine::TrackChangeFlags change) {
     return;
   }
 
-  PlayAt(i, change, false);
+  PlayAt(i, change, std::get<1>(next_row), std::get<1>(next_row));
 }
 
 bool Player::HandleStopAfter() {
@@ -389,7 +389,7 @@ void Player::SetVolume(int value) {
 int Player::GetVolume() const { return engine_->volume(); }
 
 void Player::PlayAt(int index, Engine::TrackChangeFlags change,
-                    bool reshuffle) {
+                    bool reshuffle, bool reshuffle_all) {
   if (change == Engine::Manual &&
       engine_->position_nanosec() != engine_->length_nanosec()) {
     emit TrackSkipped(current_item_);
@@ -405,7 +405,7 @@ void Player::PlayAt(int index, Engine::TrackChangeFlags change,
     change |= Engine::SameAlbum;
   }
 
-  if (reshuffle) app_->playlist_manager()->active()->ReshuffleIndices();
+  if (reshuffle) app_->playlist_manager()->active()->ReshuffleIndices(reshuffle_all);
   app_->playlist_manager()->active()->set_current_row(index);
 
   if (app_->playlist_manager()->active()->current_row() == -1) {
