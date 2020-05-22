@@ -580,21 +580,23 @@ int Playlist::PreviousVirtualIndex(int i, bool ignore_repeat_track) const {
   return -1;
 }
 
-int Playlist::next_row(bool ignore_repeat_track) const {
+std::tuple<int, bool> Playlist::next_row(bool ignore_repeat_track) const {
+  bool playlist_finished = false;
   // Any queued items take priority
   if (!queue_->is_empty()) {
-    return queue_->PeekNext();
+    return std::make_tuple(queue_->PeekNext(), playlist_finished);
   }
 
   int next_virtual_index =
       NextVirtualIndex(current_virtual_index_, ignore_repeat_track);
   if (next_virtual_index >= virtual_items_.count()) {
     // We've gone off the end of the playlist.
+    playlist_finished = true;
 
     switch (playlist_sequence_->repeat_mode()) {
       case PlaylistSequence::Repeat_Off:
       case PlaylistSequence::Repeat_Intro:
-        return -1;
+        return std::make_tuple(-1, playlist_finished);
       case PlaylistSequence::Repeat_Track:
         next_virtual_index = current_virtual_index_;
         break;
@@ -607,9 +609,9 @@ int Playlist::next_row(bool ignore_repeat_track) const {
 
   // Still off the end?  Then just give up
   if (next_virtual_index < 0 || next_virtual_index >= virtual_items_.count())
-    return -1;
+    return std::make_tuple(-1, playlist_finished);
 
-  return virtual_items_[next_virtual_index];
+  return std::make_tuple(virtual_items_[next_virtual_index], playlist_finished);
 }
 
 int Playlist::previous_row(bool ignore_repeat_track) const {

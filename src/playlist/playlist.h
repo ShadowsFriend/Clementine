@@ -18,6 +18,8 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
+#include <tuple>
+
 #include <QAbstractItemModel>
 #include <QList>
 
@@ -193,7 +195,7 @@ class Playlist : public QAbstractListModel {
 
   int current_row() const;
   int last_played_row() const;
-  int next_row(bool ignore_repeat_track = false) const;
+  std::tuple<int, bool> next_row(bool ignore_repeat_track = false) const;
   int previous_row(bool ignore_repeat_track = false) const;
 
   const QModelIndex current_index() const;

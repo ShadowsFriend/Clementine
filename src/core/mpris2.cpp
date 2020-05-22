@@ -377,7 +377,7 @@ double Mpris2::MinimumRate() const { return 1.0; }
 
 bool Mpris2::CanGoNext() const {
   return app_->playlist_manager()->active() &&
-         app_->playlist_manager()->active()->next_row() != -1;
+         std::get<0>(app_->playlist_manager()->active()->next_row()) != -1;
 }
 
 bool Mpris2::CanGoPrevious() const {

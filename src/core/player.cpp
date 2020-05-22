@@ -213,7 +213,8 @@ void Player::NextItem(Engine::TrackChangeFlags change) {
   // Manual track changes override "Repeat track"
   const bool ignore_repeat_track = change & Engine::Manual;
 
-  int i = active_playlist->next_row(ignore_repeat_track);
+  auto next_row = active_playlist->next_row(ignore_repeat_track);
+  int i = std::get<0>(next_row);
   if (i == -1) {
     app_->playlist_manager()->active()->set_current_row(i);
     emit PlaylistFinished();
@@ -228,7 +229,7 @@ bool Player::HandleStopAfter() {
   if (app_->playlist_manager()->active()->stop_after_current()) {
     // Find what the next track would've been, and mark that one as current
     // so it plays next time the user presses Play.
-    const int next_row = app_->playlist_manager()->active()->next_row();
+    const int next_row = std::get<0>(app_->playlist_manager()->active()->next_row());
     if (next_row != -1) {
       app_->playlist_manager()->active()->set_current_row(next_row, true);
     }
@@ -559,12 +560,12 @@ void Player::TrackAboutToEnd() {
   }
 
   const bool has_next_row =
-      app_->playlist_manager()->active()->next_row() != -1;
+      std::get<0>(app_->playlist_manager()->active()->next_row()) != -1;
   PlaylistItemPtr next_item;
 
   if (has_next_row) {
     next_item = app_->playlist_manager()->active()->item_at(
-        app_->playlist_manager()->active()->next_row());
+        std::get<0>(app_->playlist_manager()->active()->next_row()));
   }
 
   if (engine_->is_autocrossfade_enabled()) {
